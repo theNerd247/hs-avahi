@@ -1,44 +1,53 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Network.Avahi.Common where
 
 import Control.Exception
-import Data.Int
-import Data.Word
 import DBus
 import DBus.Client
 import DBus.Internal.Types
+import Data.Int
+import Data.Word
 
 -- | Service specification
-data Service = Service {
-  serviceProtocol :: InetProtocol,
-  serviceName :: String,
-  serviceType :: String,
-  serviceDomain :: String,
-  serviceHost :: String,
-  serviceAddress :: Maybe String,
-  servicePort :: Word16,
-  serviceText :: String }
-  deriving (Eq,Show)
+data Service = Service
+  { serviceProtocol :: InetProtocol
+  , serviceName :: String
+  , serviceType :: String
+  , serviceDomain :: String
+  , serviceHost :: String
+  , serviceAddress :: Maybe String
+  , servicePort :: Word16
+  , serviceText :: String
+  }
+  deriving (Eq, Show)
 
 -- | Service browsing query
-data BrowseQuery = BrowseQuery {
-  lookupProtocol :: InetProtocol, -- ^ Protocol to be used for lookup
-  lookupServiceName :: String,    -- ^ Service name to find
-  lookupDomain :: String,         -- ^ Domain to search in (usually `local')
-  lookupCallback :: Service -> IO () -- ^ Function to be called on found service
+data BrowseQuery = BrowseQuery
+  { lookupProtocol :: InetProtocol
+  -- ^ Protocol to be used for lookup
+  , lookupServiceName :: String
+  -- ^ Service name to find
+  , lookupDomain :: String
+  -- ^ Domain to search in (usually `local')
+  , lookupCallback :: Service -> IO ()
+  -- ^ Function to be called on found service
   }
 
 -- | Internet protocol specification
-data InetProtocol =
-    PROTO_UNSPEC  -- ^ Unspecified (any) protocol (-1)
-  | PROTO_INET    -- ^ IPv4 protocol (0)
-  | PROTO_INET6   -- ^ IPv6 protocol (1)
-  deriving (Eq,Show)
+data InetProtocol
+  = -- | Unspecified (any) protocol (-1)
+    PROTO_UNSPEC
+  | -- | IPv4 protocol (0)
+    PROTO_INET
+  | -- | IPv6 protocol (1)
+    PROTO_INET6
+  deriving (Eq, Show)
 
 proto2variant :: InetProtocol -> Variant
 proto2variant PROTO_UNSPEC = toVariant (-1 :: Int32)
-proto2variant PROTO_INET   = toVariant (0 :: Int32)
-proto2variant PROTO_INET6  = toVariant (1 :: Int32)
+proto2variant PROTO_INET = toVariant (0 :: Int32)
+proto2variant PROTO_INET6 = toVariant (1 :: Int32)
 
 variant2proto :: Variant -> InetProtocol
 variant2proto x =
@@ -51,7 +60,7 @@ variant2proto x =
 
 forceMaybe :: String -> Maybe a -> a
 forceMaybe msg Nothing = error msg
-forceMaybe _ (Just x)  = x
+forceMaybe _ (Just x) = x
 
 fromVariant_ :: (IsVariant a) => String -> Variant -> a
 fromVariant_ msg x = forceMaybe msg (fromVariant x)
@@ -82,9 +91,11 @@ entryGroupInterface = interfaceName_ "org.freedesktop.Avahi.EntryGroup"
 
 call' :: Client -> ObjectPath -> InterfaceName -> MemberName -> [Variant] -> IO [Variant]
 call' client object interface method args = do
-  reply <- call_ client (methodCall object interface method) {
-             methodCallDestination = Just avahiBus,
-             methodCallBody = args
-           }
+  reply <-
+    call_
+      client
+      (methodCall object interface method)
+        { methodCallDestination = Just avahiBus
+        , methodCallBody = args
+        }
   return $ methodReturnBody reply
-

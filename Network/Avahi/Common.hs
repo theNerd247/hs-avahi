@@ -83,8 +83,8 @@ serviceResolver = busName_ "org.freedesktop.Avahi.ServiceResolver"
 serverInterface :: InterfaceName
 serverInterface = interfaceName_ "org.freedesktop.Avahi.Server"
 
-serviceBrowserInterface :: InterfaceName
-serviceBrowserInterface = interfaceName_ "org.freedesktop.Avahi.ServiceBrowser"
+avahiBrowser :: InterfaceName
+avahiBrowser = interfaceName_ "org.freedesktop.Avahi.ServiceBrowser"
 
 entryGroupInterface :: InterfaceName
 entryGroupInterface = interfaceName_ "org.freedesktop.Avahi.EntryGroup"

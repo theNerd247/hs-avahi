@@ -93,7 +93,7 @@ on_remove_item client signal = do
   call'
     client
     "/"
-    serviceBrowserInterface
+    serverInterface
     "Free"
     [ iface
     , proto

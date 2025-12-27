@@ -90,10 +90,9 @@ on_remove_item :: Client -> Signal -> IO ()
 on_remove_item client signal = do
   let body = signalBody signal
       [iface, proto, name, stype, domain, flags] = body
-      objectPath = signalPath signal
   call'
     client
-    objectPath
+    "/"
     serviceBrowserInterface
     "Free"
     [ iface

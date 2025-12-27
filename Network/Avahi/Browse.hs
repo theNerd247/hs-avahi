@@ -94,7 +94,7 @@ on_remove_item client signal = do
     client
     "/"
     serverInterface
-    "ServiceResolverNew"
+    "Free"
     [ iface
     , proto
     , name

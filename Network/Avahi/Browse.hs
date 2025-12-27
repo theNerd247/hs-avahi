@@ -70,7 +70,7 @@ handler client callback signal = do
 on_new_item :: Client -> Signal -> IO ()
 on_new_item client signal = do
   let body = signalBody signal
-      [iface, proto, name, stype, domain] = body
+      [iface, proto, name, stype, domain, flags] = body
   call'
     client
     "/"

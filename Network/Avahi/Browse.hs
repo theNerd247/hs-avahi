@@ -96,14 +96,7 @@ on_remove_item client signal = do
     objectPath
     serviceBrowserInterface
     "Free"
-    [ iface
-    , proto
-    , name
-    , stype
-    , domain
-    , proto2variant PROTO_UNSPEC
-    , flags_empty
-    ]
+    []
   return ()
 
 on_service_found :: (Service -> IO ()) -> Signal -> IO ()

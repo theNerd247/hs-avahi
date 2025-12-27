@@ -4,7 +4,8 @@
 module Network.Avahi.Browse
   ( browse
   , dispatch
-  ) where
+  )
+where
 
 import Control.Concurrent
 import Control.Monad
@@ -62,11 +63,31 @@ handler client callback signal = do
   dispatch
     [ ("ItemNew", on_new_item client)
     , ("Found", on_service_found callback)
+    , ("ItemRemove", on_remove_item client)
     ]
     signal
 
 on_new_item :: Client -> Signal -> IO ()
 on_new_item client signal = do
+  let body = signalBody signal
+      [iface, proto, name, stype, domain, flags] = body
+  call'
+    client
+    "/"
+    serverInterface
+    "ServiceResolverNew"
+    [ iface
+    , proto
+    , name
+    , stype
+    , domain
+    , proto2variant PROTO_UNSPEC
+    , flags_empty
+    ]
+  return ()
+
+on_remove_item :: Client -> Signal -> IO ()
+on_remove_item client signal = do
   let body = signalBody signal
       [iface, proto, name, stype, domain, flags] = body
   call'

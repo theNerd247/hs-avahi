@@ -80,6 +80,9 @@ hostNameResolver = busName_ "org.freedesktop.Avahi.HostNameResolver"
 serviceResolver :: BusName
 serviceResolver = busName_ "org.freedesktop.Avahi.ServiceResolver"
 
+serviceResolverInterface :: InterfaceName
+serviceResolverInterface = interfaceName_ "org.freedesktop.Avahi.ServiceResolver"
+
 serverInterface :: InterfaceName
 serverInterface = interfaceName_ "org.freedesktop.Avahi.Server"
 

@@ -61,7 +61,7 @@ handler :: Client -> (Service -> IO ()) -> Signal -> IO ()
 handler client callback signal = do
   dispatch
     [ ("ItemNew", on_new_item client)
-    , ("Found", on_service_found callback)
+    , ("Found", on_service_found client callback)
     ]
     signal
 
@@ -84,10 +84,11 @@ on_new_item client signal = do
     ]
   return ()
 
-on_service_found :: (Service -> IO ()) -> Signal -> IO ()
-on_service_found callback signal = do
+on_service_found :: Client -> (Service -> IO ()) -> Signal -> IO ()
+on_service_found client callback signal = do
   let body = signalBody signal
       [iface, proto, name, stype, domain, host, aproto, addr, port, text, flags] = body
+      path = signalPath signal
       service =
         Service
           { serviceProtocol = variant2proto proto
@@ -99,6 +100,14 @@ on_service_found callback signal = do
           , servicePort = fromVariant_ "service port" port
           , serviceText = maybe "" toString (fromVariant text :: Maybe [ByteString])
           }
+  -- free the item before we handle the call back, this avoids leaving around duplicate resolvers.
+  call'
+    client
+    path
+    serviceResolverInterface
+    "Free"
+    []
+
   callback service
 
 toString :: [ByteString] -> String

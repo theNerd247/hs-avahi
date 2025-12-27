@@ -7,3 +7,4 @@ dist/
 .stack-work/
 cabal.sandbox.config
 browse
+dist-newstyle
